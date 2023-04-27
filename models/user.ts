@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
       nome: {
         type: String,
         trim: true,
+        uppercase: true
       },
       cpf: {
         type: Number,
@@ -36,10 +37,14 @@ const userSchema = new mongoose.Schema(
       idSecretaria: {
         type: Number
       },
+      email: {
+        type: String,
+        lowercase: true
+      },
       senha: {
         type: String,
-        min: 6,
-        max: 64,
+        min: 8,
+        max: 20,
       },
     },
     { timestamps: true }
