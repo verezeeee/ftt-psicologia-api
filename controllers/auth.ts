@@ -13,7 +13,7 @@ export async function createUser(request: Request, response: Response) {
     idOrientador,
     disciplinaMinistrada,
     idSecretaria,
-    senha,
+    senha
   } = request.body;
 
   if (!nome) {
@@ -32,6 +32,14 @@ export async function createUser(request: Request, response: Response) {
     return response
         .status(203)
         .send("Insira sua função.");
+  }
+
+  // Testando se o role no request, está entre os possiveis:
+  const possibleRoles = ["admin", "student", "secretary", "professor"]
+  if (!possibleRoles.includes(role)) {
+    return response
+        .status(203)
+        .send("O role/cargo/função é invalido.");
   }
 
   if (!matricula) {
