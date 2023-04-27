@@ -7,7 +7,7 @@ import {
     deleteUserById
 } from "../controllers/user";
 
-router.get("/:role", getUsersByRole);
+router.get("/role/:role", getUsersByRole);
 router.get("/:id", getUserById);
 router.put("/:id", updateUserById);
 router.delete("/:id", deleteUserById);
