@@ -156,25 +156,24 @@ export async function updatePacienteById(request: Request, response: Response) {
 export async function deletePacienteById(request: Request, response: Response) {
   const _id = request.params.id;
 
-  const pacienteById = await Paciente.findByIdAndDelete(_id, request.body);
-
-  // Se não encontrar paciente com esse id.
-  if (!pacienteById) {
+  // Se não existe um paciente com esse '_id', retorna antes de tentar deletar.
+  const pacienteById = await Paciente.findById(_id);
+  if (!pacienteById){
     return response
       .status(203)
-      .send("Não existe paciente com esse ID no BD.");
+      .send("Não existe paciente com esse id.");
   }
-
+  
   // Salvando a operação no BD.
   try {
-    await pacienteById.save();
+    await Paciente.findByIdAndDelete(_id)
     return response
       .status(200)
-      .send("Paciente modificado com sucesso.");
+      .send("Paciente deletado com sucesso.");
   } catch (e) {
     console.error(e);
     return response
       .status(203)
-      .send("Não foi possivel modificar o paciente.");
+      .send("Não foi possivel deletar o paciente.");
   }
 }
