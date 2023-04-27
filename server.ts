@@ -2,7 +2,11 @@ import "dotenv/config";
 
 const express = require("express");
 const mongoose = require("mongoose");
+
+// Route files, from '/routes' folder:
 const authRoutes = require("./routes/auth");
+const pacienteRoutes = require("./routes/paciente");
+const userRoutes = require("./routes/user");
 
 const app = express();
 const port = 3000;
@@ -11,6 +15,7 @@ const port = 3000;
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+// Configurações da documentação:
 const swaggerOptions = {
     swaggerDefinition: {
         info: {
@@ -22,6 +27,7 @@ const swaggerOptions = {
     apis: ['server.ts','./routes/*.ts'],
 };
 
+// Criando um endpoint para a visualização da documentação:
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -38,9 +44,14 @@ mongoose.connect(server).then(() => {
 
 // Rotas:
 app.use(express.json());
-app.use("/auth", authRoutes);
+app.use("/auth", authRoutes); // Rotas de autenticação.
+app.use("/paciente", pacienteRoutes);
+app.use("/user", userRoutes);
 
 // Escutar servidor na porta 3000:
 app.listen(port, () => {
     console.log(`App está rodando na porta ${port}`);
 });
+
+
+
