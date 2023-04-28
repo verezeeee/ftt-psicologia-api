@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Paciente from "../models/Paciente";
+import mongoose from "mongoose";
 
 export async function createPaciente(request: Request, response: Response) {
   const {
@@ -40,6 +41,13 @@ export async function createPaciente(request: Request, response: Response) {
       .send("Insira seu CPF");
   }
 
+  // Validando o comprimento do CPF:
+  if (String(cpf).length !== 11) {
+      return response
+        .status(203)
+        .send("CPF inválido. Deve possuir 11 caracteres.");
+    }
+
   if (!funcionarioUnievangelica) {
     return response
       .status(203)
@@ -52,7 +60,7 @@ export async function createPaciente(request: Request, response: Response) {
   if (pacienteInDatabaseByCpf?.cpf) {
     return response
       .status(203)
-      .send("Já existe um usuário no BD com esse cpf.");
+      .send("Já existe um paciente no BD com esse cpf.");
   }
 
   const paciente = await new Paciente({
@@ -96,7 +104,7 @@ export async function createPaciente(request: Request, response: Response) {
 }
 
 export async function getPacientes(request: Request, response: Response) {
-  const pacienteById = await Paciente.find({});
+  const pacienteById = await Paciente.find({}).lean();
   
   // Se não encontrar pacientes.
   if (!pacienteById) {
@@ -113,35 +121,45 @@ export async function getPacientes(request: Request, response: Response) {
 export async function getPacienteById(request: Request, response: Response) {
   const _id = request.params.id;
 
-  const pacienteById = await Paciente.findOne({ _id:_id }).lean();
-  
-  // Se não encontrar paciente com esse id.
-  if (!pacienteById) {
+  // Validando a id:
+  const isIdValid = mongoose.Types.ObjectId.isValid(_id);
+  if (!isIdValid) {
     return response
       .status(203)
-      .send("Não existe paciente com esse ID no BD.");
+      .send("A ObjectId passada no parametro, não é válida./Insira uma Mongodb ObjectId válida.");
   }
 
-  return response
-    .status(200)
-    .json(pacienteById);
+  // Validando a existência do paciente:
+  const pacienteById = await Paciente.findOne({ _id: _id }).lean();
+  if (!pacienteById) {
+    return response.status(203).send("Não existe paciente com esse ID no BD.");
+  }
+
+  return response.status(200).json(pacienteById);
 }
 
 export async function updatePacienteById(request: Request, response: Response) {
   const _id = request.params.id;
 
-  const pacienteById = await Paciente.findByIdAndUpdate(_id, request.body);
-
-  // Se não encontrar paciente com esse id.
-  if (!pacienteById) {
+  // Validando a id:
+  const isIdValid = mongoose.Types.ObjectId.isValid(_id)
+  if (!isIdValid){
     return response
       .status(203)
-      .send("Não existe paciente com esse ID no BD.");
+      .send("A ObjectId passada no parametro, não é válida. Insira uma Mongodb ObjectId válida.")
+  }
+  
+  // Validando a existência do paciente:
+  const pacienteById = await Paciente.findById(_id).lean();
+  if (!pacienteById){
+    return response
+      .status(203)
+      .send("Não existe paciente com esse id.");
   }
 
-  // Salvando a operação no BD.
+  // Operação no BD:
   try {
-    await pacienteById.save();
+    await Paciente.findByIdAndUpdate(_id, request.body);
     return response
       .status(200)
       .send("Paciente modificado com sucesso.");
@@ -156,17 +174,25 @@ export async function updatePacienteById(request: Request, response: Response) {
 export async function deletePacienteById(request: Request, response: Response) {
   const _id = request.params.id;
 
-  // Se não existe um paciente com esse '_id', retorna antes de tentar deletar.
-  const pacienteById = await Paciente.findById(_id);
+  // Validando a id:
+  const isIdValid = mongoose.Types.ObjectId.isValid(_id)
+  if (!isIdValid){
+    return response
+      .status(203)
+      .send("A ObjectId passada no parametro, não é válida. Insira uma Mongodb ObjectId válida.")
+  }
+
+  // Validando a existência do paciente:
+  const pacienteById = await Paciente.findById(_id).lean();
   if (!pacienteById){
     return response
       .status(203)
       .send("Não existe paciente com esse id.");
   }
   
-  // Salvando a operação no BD.
+  // Operação no BD:
   try {
-    await Paciente.findByIdAndDelete(_id)
+    await Paciente.findByIdAndDelete(_id);
     return response
       .status(200)
       .send("Paciente deletado com sucesso.");
