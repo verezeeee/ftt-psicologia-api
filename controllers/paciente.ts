@@ -54,9 +54,8 @@ export async function createPaciente(request: Request, response: Response) {
       .send("Insira se é um funcionário da instituição.");
   }
 
-  // Se já existe um paciente no BD, o sistema para antes de tentar salvar.
+  // Verificando a existência desse paciente no BD. Se já existir não tenta criar.
   const pacienteInDatabaseByCpf = await Paciente.findOne({ cpf }).lean();
-
   if (pacienteInDatabaseByCpf?.cpf) {
     return response
       .status(203)
