@@ -29,7 +29,7 @@ export async function createAgendamento(request: Request, response: Response) {
   if (dataDifference < 0) {
     return response
       .status(203)
-      .send("A data da consulta não pode ser no passado.");
+      .send("A data da consulta não pode estar no passado.");
   }
 
   // Validando a id do paciente:

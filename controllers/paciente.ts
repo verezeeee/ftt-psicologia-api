@@ -103,10 +103,10 @@ export async function createPaciente(request: Request, response: Response) {
 }
 
 export async function getPacientes(request: Request, response: Response) {
-  const pacienteById = await Paciente.find({}).lean();
+  const pacientes = await Paciente.find({}).lean();
   
   // Se não encontrar pacientes.
-  if (!pacienteById) {
+  if (!pacientes) {
     return response
       .status(203)
       .send("Não existem pacientes no BD.");
@@ -114,7 +114,7 @@ export async function getPacientes(request: Request, response: Response) {
 
   return response
     .status(200)
-    .json(pacienteById);
+    .json(pacientes);
 }
 
 export async function getPacienteById(request: Request, response: Response) {
@@ -125,7 +125,7 @@ export async function getPacienteById(request: Request, response: Response) {
   if (!isIdValid) {
     return response
       .status(203)
-      .send("A ObjectId passada no parametro, não é válida./Insira uma Mongodb ObjectId válida.");
+      .send("A ObjectId passada no parametro, não é válida. Insira uma Mongodb ObjectId válida.");
   }
 
   // Validando a existência do paciente:
