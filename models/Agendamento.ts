@@ -6,21 +6,11 @@ const agendamentoSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    pacienteNome: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     pacienteId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     // Aluno que vai atender o paciente:
-    alunoNome: {
-      type: Number,
-      required: true,
-      trim: true,
-    },
     alunoId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
