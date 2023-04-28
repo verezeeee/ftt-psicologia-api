@@ -13,6 +13,7 @@ export async function createUser(request: Request, response: Response) {
     idOrientador,
     disciplinaMinistrada,
     idSecretaria,
+    email,
     senha,
   } = request.body;
 
@@ -33,6 +34,13 @@ export async function createUser(request: Request, response: Response) {
   if (!possibleRoles.includes(role)) {
     return response.status(203).send("O role/cargo/função é invalido.");
   }
+
+    // Validação admin:
+    if (role === "admin") {
+      if (!email) {
+        return response.status(203).send("Insira o email para o admin.");
+      }
+    }
 
   // Validação para aluno:
   if (role === "student") {
