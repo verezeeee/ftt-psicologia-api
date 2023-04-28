@@ -12,9 +12,9 @@ export async function createUser(request: Request, response: Response) {
     disciplina,
     idOrientador,
     disciplinaMinistrada,
-    idSecretaria,
     email,
-    senha,
+    telefone,
+    senha
   } = request.body;
 
   if (!nome) {
@@ -23,6 +23,14 @@ export async function createUser(request: Request, response: Response) {
 
   if (!cpf) {
     return response.status(203).send("CPF inválido.");
+  }
+
+  if (!email) {
+    return response.status(203).send("email inválido.");
+  }
+
+  if (!telefone) {
+    return response.status(203).send("Telefone inválido.");
   }
 
   if (!role) {
@@ -35,12 +43,12 @@ export async function createUser(request: Request, response: Response) {
     return response.status(203).send("O role/cargo/função é invalido.");
   }
 
-    // Validação admin:
-    if (role === "admin") {
-      if (!email) {
-        return response.status(203).send("Insira o email para o admin.");
-      }
+  // Validação admin:
+  if (role === "admin") {
+    if (!email) {
+      return response.status(203).send("Insira o email para o admin.");
     }
+  }
 
   // Validação para aluno:
   if (role === "student") {
@@ -57,24 +65,17 @@ export async function createUser(request: Request, response: Response) {
     }
   }
 
-  // Validação secretária:
-  if (role === "secretary") {
-    if (!idSecretaria) {
-      return response.status(203).send("Insira a id da secretária.");
-    }
-  }
-
   // Validação professor/orientador:
   if (role === "professor") {
     if (!idOrientador) {
       return response.status(203).send("Insira o id do orientador.");
     }
-  
+
     if (!disciplinaMinistrada) {
       return response.status(203).send("Insira a disciplina ministrada.");
     }
   }
-  
+
   if (!senha) {
     return response.status(203).send("Senha inválida.");
   }
@@ -111,7 +112,6 @@ export async function createUser(request: Request, response: Response) {
     disciplina,
     idOrientador,
     disciplinaMinistrada,
-    idSecretaria,
     senha: senhaCriptografada,
   });
 

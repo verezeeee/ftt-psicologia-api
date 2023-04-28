@@ -34,12 +34,12 @@ const userSchema = new mongoose.Schema(
       disciplinaMinistrada: {
         type: String
       },
-      idSecretaria: {
-        type: Number
-      },
       email: {
         type: String,
         lowercase: true
+      },
+      telefone: {
+        type: Number
       },
       senha: {
         type: String,
