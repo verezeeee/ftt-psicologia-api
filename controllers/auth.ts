@@ -13,77 +13,64 @@ export async function createUser(request: Request, response: Response) {
     idOrientador,
     disciplinaMinistrada,
     idSecretaria,
-    senha
+    senha,
   } = request.body;
 
   if (!nome) {
-    return response
-        .status(203)
-        .send("Insira seu nome.");
+    return response.status(203).send("Insira seu nome.");
   }
 
   if (!cpf) {
-    return response
-        .status(203)
-        .send("CPF inválido.");
+    return response.status(203).send("CPF inválido.");
   }
 
   if (!role) {
-    return response
-        .status(203)
-        .send("Insira sua função.");
+    return response.status(203).send("Insira sua função.");
   }
 
   // Testando se o role no request, está entre os possiveis:
-  const possibleRoles = ["admin", "student", "secretary", "professor"]
+  const possibleRoles = ["admin", "student", "secretary", "professor"];
   if (!possibleRoles.includes(role)) {
-    return response
-        .status(203)
-        .send("O role/cargo/função é invalido.");
+    return response.status(203).send("O role/cargo/função é invalido.");
   }
 
-  if (!matricula) {
-    return response
-        .status(203)
-        .send("Insira sua matrícula.");
+  // Validação para aluno:
+  if (role === "student") {
+    if (!matricula) {
+      return response.status(203).send("Insira sua matrícula.");
+    }
+
+    if (!periodoCursado) {
+      return response.status(203).send("Insira o periodo sendo cursado.");
+    }
+
+    if (!disciplina) {
+      return response.status(203).send("Insira a disciplina.");
+    }
   }
 
-  if (!periodoCursado) {
-    return response
-        .status(203)
-        .send("Insira o periodo sendo cursado.");
+  // Validação secretária:
+  if (role === "secretary") {
+    if (!idSecretaria) {
+      return response.status(203).send("Insira a id da secretária.");
+    }
   }
 
-  if (!disciplina) {
-    return response
-        .status(203)
-        .send("Insira a disciplina.");
-  }
-
-  if (!idOrientador) {
-    return response
-        .status(203)
-        .send("Insira o id do orientador.");
-  }
-
-  if (!disciplinaMinistrada) {
-    return response
-        .status(203)
-        .send("Insira a disciplina ministrada.");
-  }
-
-  if (!idSecretaria) {
-    return response
-        .status(203)
-        .send("Insira a id da secretária.");
-  }
-
-  if (!senha) {
-    return response
-        .status(203)
-        .send("Senha inválida.");
+  // Validação professor/orientador:
+  if (role === "professor") {
+    if (!idOrientador) {
+      return response.status(203).send("Insira o id do orientador.");
+    }
+  
+    if (!disciplinaMinistrada) {
+      return response.status(203).send("Insira a disciplina ministrada.");
+    }
   }
   
+  if (!senha) {
+    return response.status(203).send("Senha inválida.");
+  }
+
   // Validando o comprimento da senha:
   if (senha.length < 8 || senha.length > 20) {
     return response
@@ -100,9 +87,7 @@ export async function createUser(request: Request, response: Response) {
 
   // Verificando se a segunda parte do nome existe:
   if (!nome.split(" ")[1]) {
-    return response
-        .status(203)
-        .send("Insira seu nome completo.");
+    return response.status(203).send("Insira seu nome completo.");
   }
 
   // Criptografia da senha:
@@ -126,21 +111,17 @@ export async function createUser(request: Request, response: Response) {
   const userInDatabaseByCpf = await User.findOne({ cpf }).lean();
   if (userInDatabaseByCpf?.cpf) {
     return response
-        .status(203)
-        .send("Já existe um usuário no BD com esse cpf.");
+      .status(203)
+      .send("Já existe um usuário no BD com esse cpf.");
   }
 
   // Salvamento do novo usuário no banco de dados:
   try {
     await user.save();
-    return response
-        .status(200)
-        .send("Usuário criado com sucesso.");
+    return response.status(200).send("Usuário criado com sucesso.");
   } catch (e) {
     console.error(e);
-    return response
-        .status(203)
-        .send("Não foi possivel criar usuário.");
+    return response.status(203).send("Não foi possivel criar usuário.");
   }
 }
 
@@ -162,7 +143,7 @@ export async function loginUser(request: Request, response: Response) {
   if (senha.lenght < 8){
       return response
         .status(203)
-        .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+        .send("Senha inválida. Deve possuir ao menos 8 caracteres.");
   }
 
   const userInDatabaseByCpf = await User.findOne({ cpf }).lean();
