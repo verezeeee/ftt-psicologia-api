@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       nome: {
         type: String,
         trim: true,
-        uppercase: true
+        lowercase: true
       },
       cpf: {
         type: Number,
