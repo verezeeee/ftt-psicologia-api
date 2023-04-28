@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const pacienteRoutes = require("./routes/paciente");
 const userRoutes = require("./routes/user");
+const agendamentoRoutes = require("./routes/agendamento")
 
 const app = express();
 const port = 3000;
@@ -47,6 +48,7 @@ app.use(express.json());
 app.use("/auth", authRoutes); // Rotas de autenticação.
 app.use("/paciente", pacienteRoutes);
 app.use("/user", userRoutes);
+app.use("/agendamento", agendamentoRoutes);
 
 // Escutar servidor na porta 3000:
 app.listen(port, () => {
