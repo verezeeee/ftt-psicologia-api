@@ -83,11 +83,19 @@ export async function createUser(request: Request, response: Response) {
         .status(203)
         .send("Senha inválida.");
   }
-
-  if (senha.lenght < 8) {
+  
+  // Validando o comprimento da senha:
+  if (senha.length < 8 || senha.length > 20) {
     return response
       .status(203)
-      .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+      .send("Senha inválida. Deve possuir entre 8 e 20 caracteres.");
+  }
+
+  // Validando o comprimento do CPF:
+  if (String(cpf).length !== 11) {
+    return response
+      .status(203)
+      .send("CPF inválido. Deve possuir 11 caracteres.");
   }
 
   // Verificando se a segunda parte do nome existe:
@@ -184,7 +192,7 @@ export async function loginUser(request: Request, response: Response) {
         .send("Senha incorreta.");
   }
 
-  // Se comparação for 'true', retorna que pode acessar o sistema.
+  // Se a comparação for 'true', retorna que pode acessar o sistema.
   return response
     .status(200)
     .send("Login feito com sucesso. Usuário pode acessar o sistema.");
