@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // Variáveis da documentação
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -26,16 +26,16 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Valores de acesso em .env:
-const user = process.env.DB_USER
-const password = process.env.DB_PASSWORD
-const clusterInfo = process.env.DB_CLUSTER_INFO
-const server = `mongodb+srv://${user}:${password}@${clusterInfo}.mongodb.net/?retryWrites=true&w=majority`
+// const user = process.env.DB_USER
+// const password = process.env.DB_PASSWORD
+// const clusterInfo = process.env.DB_CLUSTER_INFO
+const server = `mongodb+srv://theusma58:K8eJLCR2qglESs9g@cluster0.jfljmvx.mongodb.net/?retryWrites=true&w=majority`
 
 // Conexão com o BD:
 mongoose.connect(server).then(() => {
     console.log("Database connection successfull!");
 }, (e: Error) => console.error(e));
-
+    
 // Rotas:
 app.use(express.json());
 app.use("/auth", authRoutes);

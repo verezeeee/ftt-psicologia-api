@@ -16,11 +16,11 @@ export async function createUser(request: Request, response: Response) {
     senha,
   } = request.body;
 
-  if (!nome) {
-    return response
-        .status(203)
-        .send("Insira seu nome.");
-  }
+  // if (!nome) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira seu nome.");
+  // }
 
   if (!cpf) {
     return response

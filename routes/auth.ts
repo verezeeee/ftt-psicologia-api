@@ -93,5 +93,11 @@ router.post("/register", createUser);
  */
 router.post("/login", loginUser);
 
-// obs. da erro se tentar utilizar export default
+router.post("/registroProfessor", createUser);
+
+router.post("/registroSecretaria", createUser);
+
+router.post("/registroAluno", createUser);
+
+// obs. da errqo se tentar utilizar export default
 module.exports = router
