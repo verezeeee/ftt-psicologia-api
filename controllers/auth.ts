@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import User from "../models/User";
+import User from "../models/user";
 import Aluno from "../models/aluno";
 import Professor from "../models/professor";
 import Secretario from "../models/secretario";
+
 import bcrypt from "bcrypt";
 
 export async function createUser(request: Request, response: Response) {
@@ -142,11 +143,23 @@ export async function createAluno(request: Request, response: Response) {
     email,
   } = request.body;
 
-  // if (!nome) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira seu nome.");
-  // }
+  if (!matricula) {
+    return response
+        .status(203)
+        .send("Insira sua matrícula.");
+  }
+  
+  if (!periodo) {
+    return response
+        .status(203)
+        .send("Insira o periodo de aulas.");
+  }
+
+  if (!nome) {
+    return response
+        .status(203)
+        .send("Insira seu nome.");
+  }
 
   if (!cpf) {
     return response
@@ -154,58 +167,22 @@ export async function createAluno(request: Request, response: Response) {
         .send("CPF inválido.");
   }
 
-  if (!role) {
+  if (!telefoneContato) {
     return response
         .status(203)
-        .send("Insira sua função.");
+        .send("Insira seu numero de contato.");
   }
 
-  if (!matricula) {
+  if (!professsor) {
     return response
         .status(203)
-        .send("Insira sua matrícula.");
+        .send("Insira o nome do professor.");
   }
 
-  if (!periodoCursado) {
+  if (!email) {
     return response
         .status(203)
-        .send("Insira o periodo sendo cursado.");
-  }
-
-  if (!disciplina) {
-    return response
-        .status(203)
-        .send("Insira a disciplina.");
-  }
-
-  if (!idOrientador) {
-    return response
-        .status(203)
-        .send("Insira o id do orientador.");
-  }
-
-  if (!disciplinaMinistrada) {
-    return response
-        .status(203)
-        .send("Insira a disciplina ministrada.");
-  }
-
-  if (!idSecretaria) {
-    return response
-        .status(203)
-        .send("Insira a id da secretária.");
-  }
-
-  if (!senha) {
-    return response
-        .status(203)
-        .send("Senha inválida.");
-  }
-
-  if (senha.lenght < 8) {
-    return response
-      .status(203)
-      .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+        .send("E-mail inválido.");
   }
 
   // Verificando se a segunda parte do nome existe:
@@ -215,11 +192,8 @@ export async function createAluno(request: Request, response: Response) {
         .send("Insira seu nome completo.");
   }
 
-  // Criptografia da senha:
-  const senhaCriptografada = await bcrypt.hash(senha, 10);
-
-  // Criação de um novo usuário:
-  const createAluno = await new Aluno({
+  // Criação de um novo aluno:
+  const createAluno = new Aluno({
     matricula,
     periodo,
     nome,
@@ -227,7 +201,6 @@ export async function createAluno(request: Request, response: Response) {
     telefoneContato,
     professsor,
     email,
-    senha: senhaCriptografada,
   });
 
   // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
@@ -240,7 +213,7 @@ export async function createAluno(request: Request, response: Response) {
 
   // Salvamento do novo usuário no banco de dados:
   try {
-    await user.save();
+    await createAluno.save();
     return response
         .status(200)
         .send("Usuário criado com sucesso.");
@@ -252,7 +225,159 @@ export async function createAluno(request: Request, response: Response) {
   }
 }
 
+export async function createProfessor(request: Request, response: Response) {
+  const {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    disciplina,
+  } = request.body;
 
+  if (!nome) {
+    return response
+        .status(203)
+        .send("Insira seu nome.");
+  }
+
+  if (!cpf) {
+    return response
+        .status(203)
+        .send("CPF inválido.");
+  }
+
+  if (!telefoneContato) {
+    return response
+        .status(203)
+        .send("Insira seu numero de contato.");
+  }
+  
+    if (!email) {
+      return response
+          .status(203)
+          .send("E-mail inválido.");
+    }
+
+  if (!disciplina) {
+    return response
+        .status(203)
+        .send("Insira o nome da disciplina.");
+  }
+
+  // Verificando se a segunda parte do nome existe:
+  if (!nome.split(" ")[1]) {
+    return response
+        .status(203)
+        .send("Insira seu nome completo.");
+  }
+
+  // Criação de um novo Professor:
+  const createProfessor = new Professor({
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    disciplina,
+  });
+
+  // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
+  const ProfessorInDatabaseByCpf = await Professor.findOne({ cpf }).lean();
+  if (ProfessorInDatabaseByCpf?.cpf) {
+    return response
+        .status(203)
+        .send("Já existe um usuário no BD com esse cpf.");
+  }
+
+  // Salvamento do novo usuário no banco de dados:
+  try {
+    await createProfessor.save();
+    return response
+        .status(200)
+        .send("Usuário criado com sucesso.");
+  } catch (e) {
+    console.error(e);
+    return response
+        .status(203)
+        .send("Não foi possivel criar usuário.");
+  }
+}
+
+export async function createSecretario(request: Request, response: Response) {
+  const {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    turno,
+  } = request.body;
+
+  if (!nome) {
+    return response
+        .status(203)
+        .send("Insira seu nome.");
+  }
+
+  if (!cpf) {
+    return response
+        .status(203)
+        .send("CPF inválido.");
+  }
+
+  if (!telefoneContato) {
+    return response
+        .status(203)
+        .send("Insira seu numero de contato.");
+  }
+  
+    if (!email) {
+      return response
+          .status(203)
+          .send("E-mail inválido.");
+    }
+
+  if (!turno) {
+    return response
+        .status(203)
+        .send("Insira seu turno.");
+  }
+
+  // Verificando se a segunda parte do nome existe:
+  if (!nome.split(" ")[1]) {
+    return response
+        .status(203)
+        .send("Insira seu nome completo.");
+  }
+
+  // Criação de um novo Professor:
+  const createProfessor = new Professor({
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    turno,
+  });
+
+  // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
+  const ProfessorInDatabaseByCpf = await Professor.findOne({ cpf }).lean();
+  if (ProfessorInDatabaseByCpf?.cpf) {
+    return response
+        .status(203)
+        .send("Já existe um usuário no BD com esse cpf.");
+  }
+
+  // Salvamento do novo usuário no banco de dados:
+  try {
+    await createProfessor.save();
+    return response
+        .status(200)
+        .send("Usuário criado com sucesso.");
+  } catch (e) {
+    console.error(e);
+    return response
+        .status(203)
+        .send("Não foi possivel criar usuário.");
+  }
+}
 
 export async function loginUser(request: Request, response: Response) {
   const { cpf, senha } = request.body;
