@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cors from "cors";
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -24,6 +25,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(cors());
 
 // Valores de acesso em .env:
 // const user = process.env.DB_USER

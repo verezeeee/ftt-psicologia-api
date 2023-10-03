@@ -26,72 +26,72 @@ export async function createUser(request: Request, response: Response) {
   //       .send("Insira seu nome.");
   // }
 
-  if (!cpf) {
-    return response
-        .status(203)
-        .send("CPF inválido.");
-  }
+  // if (!cpf) {
+  //   return response
+  //       .status(203)
+  //       .send("CPF inválido.");
+  // }
 
-  if (!role) {
-    return response
-        .status(203)
-        .send("Insira sua função.");
-  }
+  // if (!role) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira sua função.");
+  // }
 
-  if (!matricula) {
-    return response
-        .status(203)
-        .send("Insira sua matrícula.");
-  }
+  // if (!matricula) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira sua matrícula.");
+  // }
 
-  if (!periodoCursado) {
-    return response
-        .status(203)
-        .send("Insira o periodo sendo cursado.");
-  }
+  // if (!periodoCursado) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira o periodo sendo cursado.");
+  // }
 
-  if (!disciplina) {
-    return response
-        .status(203)
-        .send("Insira a disciplina.");
-  }
+  // if (!disciplina) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira a disciplina.");
+  // }
 
-  if (!idOrientador) {
-    return response
-        .status(203)
-        .send("Insira o id do orientador.");
-  }
+  // if (!idOrientador) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira o id do orientador.");
+  // }
 
-  if (!disciplinaMinistrada) {
-    return response
-        .status(203)
-        .send("Insira a disciplina ministrada.");
-  }
+  // if (!disciplinaMinistrada) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira a disciplina ministrada.");
+  // }
 
-  if (!idSecretaria) {
-    return response
-        .status(203)
-        .send("Insira a id da secretária.");
-  }
+  // if (!idSecretaria) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira a id da secretária.");
+  // }
 
-  if (!senha) {
-    return response
-        .status(203)
-        .send("Senha inválida.");
-  }
+  // if (!senha) {
+  //   return response
+  //       .status(203)
+  //       .send("Senha inválida.");
+  // }
 
-  if (senha.lenght < 8) {
-    return response
-      .status(203)
-      .send("Senha inválida. Deve possuir mais de 8 caracteres.");
-  }
+  // if (senha.lenght < 8) {
+  //   return response
+  //     .status(203)
+  //     .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+  // }
 
-  // Verificando se a segunda parte do nome existe:
-  if (!nome.split(" ")[1]) {
-    return response
-        .status(203)
-        .send("Insira seu nome completo.");
-  }
+  // // Verificando se a segunda parte do nome existe:
+  // if (!nome.split(" ")[1]) {
+  //   return response
+  //       .status(203)
+  //       .send("Insira seu nome completo.");
+  // }
 
   // Criptografia da senha:
   const senhaCriptografada = await bcrypt.hash(senha, 10);

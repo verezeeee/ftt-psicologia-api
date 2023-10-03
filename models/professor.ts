@@ -12,7 +12,7 @@ const professorSchema = new mongoose.Schema (
             trim: true,
           },
           cpf: {
-            type: Number,
+            type: String,
             required: true,
           },
           telefoneContato: {

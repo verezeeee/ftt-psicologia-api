@@ -1,9 +1,15 @@
 import express from "express";
 const router = express.Router();
 import { 
+    createAluno,
+    createProfessor,
+    createSecretario,
     createUser,
     loginUser
 } from "../controllers/auth";
+import professor from "../models/professor";
+import secretario from "../models/secretario";
+import aluno from "../models/aluno";
 
 /**
  * @swagger
@@ -93,11 +99,52 @@ router.post("/register", createUser);
  */
 router.post("/login", loginUser);
 
-router.post("/registroProfessor", createUser);
+router.post("/registroProfessor", createProfessor);
 
-router.post("/registroSecretaria", createUser);
+router.post("/registroSecretario", createSecretario);
 
-router.post("/registroAluno", createUser);
+router.post("/registroAluno", createAluno);
+
+router.get('/getProfessores', (req, res) => {
+    try{
+        professor.find({})
+        .then((data) => {
+            res.json(data)
+        })
+        .catch((error) => {
+           res.json({message: error})
+        })
+    }catch(error){
+        res.json({message: error})
+    }
+})
+router.get('/getAlunos', (req, res) => {
+    try{
+        aluno.find({})
+        .then((data) => {
+            res.json(data)
+        })
+        .catch((error) => {
+           res.json({message: error})
+        })
+    }catch(error){
+        res.json({message: error})
+    }
+})
+router.get('/getSecretarios', (req, res) => {
+    try{
+        secretario.find({})
+        .then((data) => {
+            res.json(data)
+        })
+        .catch((error) => {
+           res.json({message: error})
+        })
+    }catch(error){
+        res.json({message: error})
+    }
+})
+
 
 // obs. da errqo se tentar utilizar export default
 module.exports = router
