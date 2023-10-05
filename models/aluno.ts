@@ -7,11 +7,11 @@ const alunoSchema = new mongoose.Schema (
             default: Date.now(),    
           },
           matricula: {
-            type: Number,
+            type: String,
             required: true,
           },
           periodo: {
-            type: Number,
+            type: String,
             require: true,  
           },
           nome: {
@@ -20,14 +20,14 @@ const alunoSchema = new mongoose.Schema (
             trim: true,
           },
           cpf: {
-            type: Number,
+            type: String,
             required: true,
           },
           telefoneContato: {
-            type: Number,
+            type: String,
             required: true,
           },
-          professsor: {
+          professor: {
             type: String,
             required: true,
           },

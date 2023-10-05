@@ -6,7 +6,7 @@ import Secretario from "../models/secretario";
 
 import bcrypt from "bcrypt";
 
-export async function createUser(request: Request, response: Response) {
+export async function createUser(request: Request, response: Response) {    
   const {
     nome,
     cpf,
@@ -20,78 +20,78 @@ export async function createUser(request: Request, response: Response) {
     senha,
   } = request.body;
 
-  // if (!nome) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira seu nome.");
-  // }
+  if (!nome) {
+    return response
+        .status(203)
+        .send("Insira seu nome.");
+  }
 
-  // if (!cpf) {
-  //   return response
-  //       .status(203)
-  //       .send("CPF inválido.");
-  // }
+  if (!cpf) {
+    return response
+        .status(203)
+        .send("CPF inválido.");
+  }
 
-  // if (!role) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira sua função.");
-  // }
+  if (!role) {
+    return response
+        .status(203)
+        .send("Insira sua função.");
+  }
 
-  // if (!matricula) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira sua matrícula.");
-  // }
+  if (!matricula) {
+    return response
+        .status(203)
+        .send("Insira sua matrícula.");
+  }
 
-  // if (!periodoCursado) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira o periodo sendo cursado.");
-  // }
+  if (!periodoCursado) {
+    return response
+        .status(203)
+        .send("Insira o periodo sendo cursado.");
+  }
 
-  // if (!disciplina) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira a disciplina.");
-  // }
+  if (!disciplina) {
+    return response
+        .status(203)
+        .send("Insira a disciplina.");
+  }
 
-  // if (!idOrientador) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira o id do orientador.");
-  // }
+  if (!idOrientador) {
+    return response
+        .status(203)
+        .send("Insira o id do orientador.");
+  }
 
-  // if (!disciplinaMinistrada) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira a disciplina ministrada.");
-  // }
+  if (!disciplinaMinistrada) {
+    return response
+        .status(203)
+        .send("Insira a disciplina ministrada.");
+  }
 
-  // if (!idSecretaria) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira a id da secretária.");
-  // }
+  if (!idSecretaria) {
+    return response
+        .status(203)
+        .send("Insira a id da secretária.");
+  }
 
-  // if (!senha) {
-  //   return response
-  //       .status(203)
-  //       .send("Senha inválida.");
-  // }
+  if (!senha) {
+    return response
+        .status(203)
+        .send("Senha inválida.");
+  }
 
-  // if (senha.lenght < 8) {
-  //   return response
-  //     .status(203)
-  //     .send("Senha inválida. Deve possuir mais de 8 caracteres.");
-  // }
+  if (senha.lenght < 8) {
+    return response
+      .status(203)
+      .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+  }
 
-  // // Verificando se a segunda parte do nome existe:
-  // if (!nome.split(" ")[1]) {
-  //   return response
-  //       .status(203)
-  //       .send("Insira seu nome completo.");
-  // }
+  // Verificando se a segunda parte do nome existe:
+  if (!nome.split(" ")[1]) {
+    return response
+        .status(203)
+        .send("Insira seu nome completo.");
+  }
 
   // Criptografia da senha:
   const senhaCriptografada = await bcrypt.hash(senha, 10);
@@ -139,7 +139,7 @@ export async function createAluno(request: Request, response: Response) {
     nome,
     cpf,
     telefoneContato,
-    professsor,
+    professor,
     email,
   } = request.body;
 
@@ -173,7 +173,7 @@ export async function createAluno(request: Request, response: Response) {
         .send("Insira seu numero de contato.");
   }
 
-  if (!professsor) {
+  if (!professor) {
     return response
         .status(203)
         .send("Insira o nome do professor.");
@@ -199,7 +199,7 @@ export async function createAluno(request: Request, response: Response) {
     nome,
     cpf,
     telefoneContato,
-    professsor,
+    professor,
     email,
   });
 
@@ -348,8 +348,8 @@ export async function createSecretario(request: Request, response: Response) {
         .send("Insira seu nome completo.");
   }
 
-  // Criação de um novo Professor:
-  const createProfessor = new Professor({
+  // Criação de um novo Secretario:
+  const createSecretario = new Secretario({
     nome,
     cpf,
     telefoneContato,
@@ -358,8 +358,8 @@ export async function createSecretario(request: Request, response: Response) {
   });
 
   // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
-  const ProfessorInDatabaseByCpf = await Professor.findOne({ cpf }).lean();
-  if (ProfessorInDatabaseByCpf?.cpf) {
+  const SecretarioInDatabaseByCpf = await Secretario.findOne({ cpf }).lean();
+  if (SecretarioInDatabaseByCpf?.cpf) {
     return response
         .status(203)
         .send("Já existe um usuário no BD com esse cpf.");
@@ -367,7 +367,7 @@ export async function createSecretario(request: Request, response: Response) {
 
   // Salvamento do novo usuário no banco de dados:
   try {
-    await createProfessor.save();
+    await createSecretario.save();
     return response
         .status(200)
         .send("Usuário criado com sucesso.");
