@@ -16,7 +16,7 @@ const professorSchema = new mongoose.Schema (
             required: true,
           },
           telefoneContato: {
-            type: Number,
+            type: String,
             required: true,
           },
           email: {
