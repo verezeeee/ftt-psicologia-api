@@ -3,8 +3,12 @@ import User from "../models/user";
 import Aluno from "../models/aluno";
 import Professor from "../models/professor";
 import Secretario from "../models/secretario";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = 'URWzLAYqnM63NDxcGnskMDnT1GanhVcAJpp6ylI5xio5otZMp2zLQ4ddYjOaT9F3'
 
 import bcrypt from "bcrypt";
+import { decode } from "punycode";
 
 export async function createUser(request: Request, response: Response) {    
   const {
@@ -141,6 +145,7 @@ export async function createAluno(request: Request, response: Response) {
     telefoneContato,
     professor,
     email,
+    
   } = request.body;
 
   if (!matricula) {
@@ -201,6 +206,7 @@ export async function createAluno(request: Request, response: Response) {
     telefoneContato,
     professor,
     email,
+    role: "Estudante",
   });
 
   // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
@@ -380,21 +386,21 @@ export async function createSecretario(request: Request, response: Response) {
 }
 
 export async function loginUser(request: Request, response: Response) {
-  const { cpf, senha } = request.body;
-
+  
+  const { cpf, password } = request.body;
   if (!cpf) {
     return response
         .status(203)
         .send("CPF inválido.");
   }
 
-  if (!senha) {
+  if (!password) {
     return response
         .status(203)
         .send("Senha inválida.");
   }
 
-  if (senha.lenght < 8){
+  if (password.lenght < 8){
       return response
         .status(203)
         .send("Senha inválida. Deve possuir mais de 8 caracteres.");
@@ -415,10 +421,10 @@ export async function loginUser(request: Request, response: Response) {
         .status(203)
         .send("erro");
   }
-
+  
   const databaseSenhaCriptografada = userInDatabaseByCpf.senha;
   const booleanReqSenhaCriptografada = await bcrypt.compare(
-    senha, databaseSenhaCriptografada); // 'senha' aqui, é a que vem no request.
+    password, databaseSenhaCriptografada); // 'senha' aqui, é a que vem no request.
 
   // Se a comparação for 'false', retorna senha incorreta.
   if (!booleanReqSenhaCriptografada) {
@@ -426,9 +432,22 @@ export async function loginUser(request: Request, response: Response) {
         .status(203)
         .send("Senha incorreta.");
   }
-
+  const token = jwt.sign({ email: cpf}, JWT_SECRET, {
+    expiresIn: '1h',
+  })
+  console.log('Fez login e gerou token.')
+  if (response.status(201)){
+    return response.status(200).send(
+      {
+        auth: true,
+        token: token,
+        user: userInDatabaseByCpf
+      }
+    )
+  }
   // Se comparação for 'true', retorna que pode acessar o sistema.
   return response
     .status(200)
     .send("Login feito com sucesso. Usuário pode acessar o sistema.");
 }
+
