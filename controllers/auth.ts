@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user";
-import Aluno from "../models/aluno";
+import Aluno from "../models/aluno"; 
+import Paciente from "../models/Paciente"
 import Professor from "../models/professor";
 import Secretario from "../models/secretario";
 import jwt from "jsonwebtoken";
@@ -214,7 +215,7 @@ export async function createAluno(request: Request, response: Response) {
   if (AlunoInDatabaseByCpf?.cpf) {
     return response
         .status(203)
-        .send("Já existe um usuário no BD com esse cpf.");
+        .send("Já existe um aluno no BD com esse cpf.");
   }
 
   // Salvamento do novo usuário no banco de dados:
@@ -222,12 +223,232 @@ export async function createAluno(request: Request, response: Response) {
     await createAluno.save();
     return response
         .status(200)
-        .send("Usuário criado com sucesso.");
+        .send("Cadastro do aluno criado com sucesso.");
   } catch (e) {
     console.error(e);
     return response
         .status(203)
-        .send("Não foi possivel criar usuário.");
+        .send("Não foi possivel realizar o Cadastro do aluno.");
+  }
+}
+
+export async function createPaciente(request: Request, response: Response) {
+  const {
+    // Informações pessoais:
+    nome,
+    cpf,
+    dataDeNacimento,
+    email,
+    telefoneContato,
+    sexo,
+    estadoCivil,
+    religiao,
+    rendaFamiliar,
+    profissao,
+    outroContato,
+    nomeDoContatoResponsavel,
+    menorDeIdade,
+    naturalidade,
+    nacionalidade,
+    // Endereço:
+    enderecoCep,
+    enderecoLogradouro,
+    enderecoBairro,
+    enderecoComplemento,
+    enderecoCidade,
+    enderecoUF,
+    // Informação de tratamento:
+    dataInicioTratamento,
+    dataTerminoTratamento,
+    quemEncaminhou,
+    tipoDeTratamento,
+    alunoUnieva,
+    funcionarioUnieva,
+        
+  } = request.body;
+  
+  // Informaçoes Pessoais: 
+  if (!nome) {
+    return response
+        .status(203)
+        .send("Insira seu nome.");
+  }
+
+  if (!cpf) {
+    return response
+        .status(203)
+        .send("CPF inválido.");
+  }
+
+  if (!dataDeNacimento) {
+    return response
+        .status(203)
+        .send("Insira a sua data de nacimento.");
+  }
+
+  if (!email) {
+    return response
+        .status(203)
+        .send("E-mail inválido.");
+  }
+
+  if (!telefoneContato) {
+    return response
+        .status(203)
+        .send("Insira seu numero de contato.");
+  }
+
+  if (!sexo) {
+    return response
+        .status(203)
+        .send("Selecione o seu sexo.");
+  }
+
+  if (!estadoCivil) {
+    return response
+        .status(203)
+        .send("selecione um estado civil.");
+  }
+
+  if (!religiao) {
+    return response
+        .status(203)
+        .send("Insira sua religao.");
+  }
+
+  if (!rendaFamiliar) {
+    return response
+        .status(203)
+        .send("Insira Sua Renda familiar.");
+  }
+
+  if (!profissao) {
+    return response
+        .status(203)
+        .send("Insira a sua Profissão.");
+  }
+
+  if (!naturalidade) {
+    return response
+        .status(203)
+        .send("Insira a sua naturalidade.");
+  }
+
+  if (!nacionalidade) {
+    return response
+        .status(203)
+        .send("Insira a sua nacionalidade.");
+  }
+
+  // Informaçoes Pessoais: 
+  if (!enderecoCep) {
+    return response
+        .status(203)
+        .send("Insira o seu CEP.");
+  }
+
+  if (!enderecoLogradouro) {
+    return response
+        .status(203)
+        .send("Insira o seu endereço.");
+  }
+
+  if (!enderecoBairro) {
+    return response
+        .status(203)
+        .send("Insira o nome do seu bairro.");
+  }
+
+  if (!enderecoCidade) {
+    return response
+        .status(203)
+        .send("Insira o nome da sua Cidade.");
+  }
+
+  if (!enderecoUF) {
+    return response
+        .status(203)
+        .send("Insira qual a sua regiao");
+  }
+
+  // Informaçoes Pessoais:  
+  if (!dataInicioTratamento) {
+    return response
+        .status(203)
+        .send("Insira a data de incio do tratamento.");
+  }
+  
+  if (!dataTerminoTratamento) {
+    return response
+        .status(203)
+        .send("Insira a data do termino do tratamento.");
+  }
+
+  if (!quemEncaminhou) {
+    return response
+        .status(203)
+        .send("Insira o nome do que encaminhou esse paciente.");
+  }
+
+  if (!tipoDeTratamento) {
+    return response
+        .status(203)
+        .send("Insira o tipo de tratamento.");
+  }
+
+  // Criação de um novo Paciente:
+  const createPaciente = new Paciente({
+    // Informações pessoais:
+    nome,
+    cpf,
+    dataDeNacimento,
+    email,
+    telefoneContato,
+    sexo,
+    estadoCivil,
+    religiao,
+    rendaFamiliar,
+    profissao,
+    outroContato,
+    nomeDoContatoResponsavel,
+    menorDeIdade,
+    naturalidade,
+    nacionalidade,
+    // Endereço:
+    enderecoCep,
+    enderecoLogradouro,
+    enderecoBairro,
+    enderecoComplemento,
+    enderecoCidade,
+    enderecoUF,
+    // Informação de tratamento:
+    dataInicioTratamento,
+    dataTerminoTratamento,
+    quemEncaminhou,
+    tipoDeTratamento,
+    alunoUnieva,
+    funcionarioUnieva,
+  });
+
+  // Se já existe um usuário no BD, o sistema para antes de tentar salvar.
+  const PacienteInDatabaseByCpf = await Paciente.findOne({ cpf }).lean();
+  if (PacienteInDatabaseByCpf?.cpf) {
+    return response
+        .status(203)
+        .send("Já existe um Paciente no BD com esse cpf.");
+  }
+
+  // Salvamento do novo usuário no banco de dados:
+  try {
+    await createPaciente.save();
+    return response
+        .status(200)
+        .send("Cadastro de pacinete criado com sucesso.");
+  } catch (e) {
+    console.error(e);
+    return response
+        .status(203)
+        .send("Não foi possivel criar Cadastro de pacinete.");
   }
 }
 
@@ -299,12 +520,12 @@ export async function createProfessor(request: Request, response: Response) {
     await createProfessor.save();
     return response
         .status(200)
-        .send("Usuário criado com sucesso.");
+        .send("Cadastro de professor criado com sucesso.");
   } catch (e) {
     console.error(e);
     return response
         .status(203)
-        .send("Não foi possivel criar usuário.");
+        .send("Não foi possivel criar Cadastro de professor.");
   }
 }
 
@@ -344,7 +565,7 @@ export async function createSecretario(request: Request, response: Response) {
   if (!turno) {
     return response
         .status(203)
-        .send("Insira seu turno.");
+        .send("Selecione  seu turno.");
   }
 
   // Verificando se a segunda parte do nome existe:
@@ -376,12 +597,12 @@ export async function createSecretario(request: Request, response: Response) {
     await createSecretario.save();
     return response
         .status(200)
-        .send("Usuário criado com sucesso.");
+        .send("Cadastro de secretario criado com sucesso.");
   } catch (e) {
     console.error(e);
     return response
         .status(203)
-        .send("Não foi possivel criar usuário.");
+        .send("Não foi possivel criar Cadastro de secretario.");
   }
 }
 

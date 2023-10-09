@@ -6,83 +6,114 @@ const pacienteSchema = new mongoose.Schema(
         type: Date,
         default: Date.now(),
       },
+      // Informações pessoais:
       nome: {
         type: String,
         required: true,
         trim: true,
       },
       cpf: {
-        type: Number,
+        type: String,
         required: true,
         trim: true
       },
-      idade: {
-        type: Number
+      dataDeNacimento: {
+        type: String,
+        required: true,
       },
-      enderecoCep: {
-        type: Number
-      },
-      enderecoComplemento: {
-        type: String
-      },
-      enderecoNumero: {
-        type: Number
-      },
-      religiao: {
-        type: String
-      },
-      profissao: {
-        type: String
-      },
-      estadoCivil: {
-        type: String
-      },
-      sexo: {
-        type: String
-      },
-      naturalidade: {
-        type: String
-      },
-      nacionalidade: {
-        type: String
-      },
-      rendaFamiliar: {
-        type: String
-      },
-      nomeContato: {
-        type: String
+      email: {
+        type: String,
+        required: true, 
       },
       telefoneContato: {
-        type: Number
+        type: String,
+        required: true, 
       },
-      instituicaoDeEstudo: {
-        type: String
+      sexo: {
+        type: String,
+        required: true, 
       },
-      nomeResponsavelLegal: {
-        type: String
+      estadoCivil: {
+        type: String,
+        required: true, 
       },
-      contatoResponsavelLegal: {
-        type: Number
+      religiao: {
+        type: String,
+        required: true, 
       },
+      profissao: {
+        type: String,
+        required: true, 
+      },
+      outroContato: {
+        type: String,
+        required: false, 
+      },
+      nomeDoContatoResponsavel: {
+        type: String,
+        required: false, 
+      },
+      menorDeIdade: {
+        type: Boolean,
+        required: false,  
+      },
+      naturalidade: {
+        type: String,
+        required: true, 
+      },
+      nacionalidade: {
+        type: String,
+        required: true, 
+      },
+      // Endereço:
+      enderecoCep: {
+        type: String,
+        required: true, 
+      },
+      enderecoLogradouro: {
+        type: String,
+        required: true, 
+      },
+      enderecoBairro: {
+        type: String,
+        required: true, 
+      },
+      enderecoComplemento: {
+        type: String, 
+        required: false, 
+      },
+      enderecoCidade: {
+        type: String,
+        required: true, 
+      },
+      enderecoUF: {
+        type: String,
+        required: true, 
+      },
+      // Informação de tratamento:
       dataInicioTratamento: {
-        type: Date
+        type: String,
+        required: true, 
       },
       dataTerminoTratamento: {
-        type: Date
+        type: String,
+        required: true, 
       },
-      nomePessoaEcaminhamento: {
-        type: String
+      quemEncaminhou: {
+        type: String,
+        required: true, 
+      },
+      tipoDeTratamento: {
+        type: String,
+        required: true, 
+      },
+      alunoUnieva: {
+        type: Boolean,
+        required: false, 
       },
       funcionarioUnieva: {
         type: Boolean,
-        required: true,
-        default: false
-      },
-      alunoUnieva: {
-        type: Boolean
-      },
-      tratamentoOferecido: {
-        type: String
+        required: false, 
       },
       config: {
         introVisualized: Boolean,
