@@ -18,7 +18,7 @@ const pacienteSchema = new mongoose.Schema(
         trim: true
       },
       dataDeNacimento: {
-        type: String,
+        type: String,   
         required: true,
       },
       email: {
@@ -115,12 +115,12 @@ const pacienteSchema = new mongoose.Schema(
         type: Boolean,
         required: false, 
       },
-      config: {
-        introVisualized: Boolean,
-        default: {
-          introVisualized: false,
-        },
-      },
+      // config: {
+      //   introVisualized: Boolean,
+      //   default: {
+      //     introVisualized: false,
+      //   },
+      // },
     },
     { timestamps: true }
   );

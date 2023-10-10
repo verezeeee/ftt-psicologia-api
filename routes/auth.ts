@@ -5,11 +5,14 @@ import {
     createProfessor,
     createSecretario,
     createUser,
+    createPaciente,
     loginUser
 } from "../controllers/auth";
 import professor from "../models/professor";
 import secretario from "../models/secretario";
 import aluno from "../models/aluno";
+import paciente from "../models/Paciente";
+import { runInContext } from "vm";
 
 /**
  * @swagger
@@ -97,14 +100,8 @@ router.post("/register", createUser);
  *        description: Erro
  * 
  */
-router.post("/login", loginUser);
 
-router.post("/registroProfessor", createProfessor);
-
-router.post("/registroSecretario", createSecretario);
-
-router.post("/registroAluno", createAluno);
-
+// Rotas Get
 router.get('/getProfessores', (req, res) => {
     try{
         professor.find({})
@@ -117,20 +114,8 @@ router.get('/getProfessores', (req, res) => {
     }catch(error){
         res.json({message: error})
     }
-})
-router.get('/getAlunos', (req, res) => {
-    try{
-        aluno.find({})
-        .then((data) => {
-            res.json(data)
-        })
-        .catch((error) => {
-           res.json({message: error})
-        })
-    }catch(error){
-        res.json({message: error})
-    }
-})
+});
+
 router.get('/getSecretarios', (req, res) => {
     try{
         secretario.find({})
@@ -143,8 +128,63 @@ router.get('/getSecretarios', (req, res) => {
     }catch(error){
         res.json({message: error})
     }
+});
+
+router.get('/getAlunos', (req, res) => {
+    try{
+        aluno.find({})
+        .then((data) => {
+            res.json(data)
+        })
+        .catch((error) => {
+           res.json({message: error})
+        })
+    }catch(error){
+        res.json({message: error})
+    }
+});
+
+router.get('/getPacientes', (req, res) => {
+    try{
+        paciente.find({})
+        .then((data) => {
+            res.json(data)
+        })
+        .catch((error) => {
+           res.json({message: error})
+        })
+    }catch(error){
+        res.json({message: error})
+    }
+});
+
+// Rotas Post
+router.post("/login", loginUser);
+
+router.post("/registroProfessor", createProfessor);
+
+router.post("/registroSecretario", createSecretario);
+
+router.post("/registroAluno", createAluno);
+
+router.post("/registroPaciente", createPaciente);
+
+// Rotas Patch
+router.patch("/attAluno/:cpf", (req, res) => {
+    // try{
+    //     aluno.find({})
+    //     .then((data) => {
+    //         res.json(data)
+    //     })
+    //     .catch((error) => {
+    //         res.json({message: error})
+    //      })
+    // }catch(error) => {
+    //     res.json({message: error})
+    //  }
 })
 
+// Rotas de Delete
 
 // obs. da errqo se tentar utilizar export default
 module.exports = router

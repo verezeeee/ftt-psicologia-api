@@ -5,6 +5,7 @@ import Paciente from "../models/Paciente"
 import Professor from "../models/professor";
 import Secretario from "../models/secretario";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 const JWT_SECRET = 'URWzLAYqnM63NDxcGnskMDnT1GanhVcAJpp6ylI5xio5otZMp2zLQ4ddYjOaT9F3'
 
@@ -672,3 +673,36 @@ export async function loginUser(request: Request, response: Response) {
     .send("Login feito com sucesso. Usuário pode acessar o sistema.");
 }
 
+export async function patchAluno(request: Request, response: Response) {
+  const {
+    matricula,
+    periodo,
+    nome,
+    cpf,
+    telefoneContato,
+    professor,
+    email,
+  } = request.body;
+
+  try {
+    const updatedFields = {
+      matricula,
+      periodo,
+      nome,
+      telefoneContato,
+      professor,
+      email,
+    };
+
+    const res = await axios.patch(`/auth/attPaciente/${cpf}`, updatedFields);
+
+    if (res.status === 200) {
+      return response.send('Usuário atualizado com sucesso');
+    } else {
+      throw new Error('Erro para fazer update no aluno');
+    }
+  } catch (error) {
+    console.log({ Erro: error, message: 'Erro ao atualizar aluno' });
+    response.status(500).send('Erro ao atualizar aluno');
+  }
+}
