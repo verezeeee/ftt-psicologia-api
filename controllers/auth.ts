@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import User from "../models/user";
 import Aluno from "../models/aluno"; 
 import Paciente from "../models/Paciente"
@@ -7,11 +7,17 @@ import Secretario from "../models/secretario";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 
+
+
 const JWT_SECRET = 'URWzLAYqnM63NDxcGnskMDnT1GanhVcAJpp6ylI5xio5otZMp2zLQ4ddYjOaT9F3'
 
 import bcrypt from "bcrypt";
 import { decode } from "punycode";
+import aluno from "../models/aluno";
+import { request } from "http";
 
+// Funçoes User:
+// Metodo POST:
 export async function createUser(request: Request, response: Response) {    
   const {
     nome,
@@ -138,6 +144,76 @@ export async function createUser(request: Request, response: Response) {
   }
 }
 
+// Metodo GET:
+export async function getAluno(req: Request, res: Response) {
+  try{
+    aluno.find({})
+    .then((data) =>{
+      response.json(data)
+    })
+    .catch((error) => {
+      res.json({message: error})
+    })
+  }catch(error) {
+    res.json({message: Error})
+  }
+}
+
+// Metodo PATCH:
+export async function patchAluno(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { matricula, periodo, nome, cpf, telefoneContato, professor, email } = request.body;
+
+    const res = await aluno.findByIdAndUpdate(id, {
+      matricula,
+      periodo,
+      nome,
+      cpf,
+      telefoneContato,
+      professor,
+      email,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+}
+
+export async function PatchAlunoArquivo(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { arquivado }
+    = request.body
+
+    const res = await aluno.findByIdAndUpdate(id, {
+      arquivado,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+// Metodo DELETE?
+export async function deleteAluno(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    
+    const res = await aluno.findByIdAndDelete(id)
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+// Login User
+
+// Funçoes Aluno:
+// Metodo POST:
 export async function createAluno(request: Request, response: Response) {
   const {
     matricula,
@@ -147,6 +223,7 @@ export async function createAluno(request: Request, response: Response) {
     telefoneContato,
     professor,
     email,
+    arquivado,
     
   } = request.body;
 
@@ -208,6 +285,7 @@ export async function createAluno(request: Request, response: Response) {
     telefoneContato,
     professor,
     email,
+    arquivado,
     role: "Estudante",
   });
 
@@ -233,6 +311,8 @@ export async function createAluno(request: Request, response: Response) {
   }
 }
 
+// Funçoes Paciente:
+// Metodo POST:
 export async function createPaciente(request: Request, response: Response) {
   const {
     // Informações pessoais:
@@ -453,6 +533,8 @@ export async function createPaciente(request: Request, response: Response) {
   }
 }
 
+// Funçoes Professor:
+// Metodo POST:
 export async function createProfessor(request: Request, response: Response) {
   const {
     nome,
@@ -530,6 +612,8 @@ export async function createProfessor(request: Request, response: Response) {
   }
 }
 
+// Funçoes Secretario:
+// Metodo POST:
 export async function createSecretario(request: Request, response: Response) {
   const {
     nome,
@@ -607,6 +691,9 @@ export async function createSecretario(request: Request, response: Response) {
   }
 }
 
+
+
+
 export async function loginUser(request: Request, response: Response) {
   
   const { cpf, password } = request.body;
@@ -671,38 +758,4 @@ export async function loginUser(request: Request, response: Response) {
   return response
     .status(200)
     .send("Login feito com sucesso. Usuário pode acessar o sistema.");
-}
-
-export async function patchAluno(request: Request, response: Response) {
-  const {
-    matricula,
-    periodo,
-    nome,
-    cpf,
-    telefoneContato,
-    professor,
-    email,
-  } = request.body;
-
-  try {
-    const updatedFields = {
-      matricula,
-      periodo,
-      nome,
-      telefoneContato,
-      professor,
-      email,
-    };
-
-    const res = await axios.patch(`/auth/attPaciente/${cpf}`, updatedFields);
-
-    if (res.status === 200) {
-      return response.send('Usuário atualizado com sucesso');
-    } else {
-      throw new Error('Erro para fazer update no aluno');
-    }
-  } catch (error) {
-    console.log({ Erro: error, message: 'Erro ao atualizar aluno' });
-    response.status(500).send('Erro ao atualizar aluno');
-  }
 }

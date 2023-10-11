@@ -35,6 +35,11 @@ const alunoSchema = new mongoose.Schema (
             type: String,
             required: true,
           },
+          arquivado: {
+            type: Boolean,
+            default: false,
+            required:false,
+          }
     },
     { timestamps: true }
 );
