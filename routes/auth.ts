@@ -1,10 +1,8 @@
 import express from "express";
 const router = express.Router();
 import { 
-    createProfessor,
-    createSecretario,
     createUser,
-    createPaciente,
+
     loginUser,
 
     createAluno,
@@ -12,6 +10,24 @@ import {
     patchAluno,
     PatchAlunoArquivo,
     deleteAluno,
+
+    createPaciente,
+    getPaciente,
+    patchPaciente,
+    patchPacienteArquivo,
+    deletePaciente,
+
+    createProfessor,
+    getProfessores,
+    patchProfessor,
+    patchProfessorArquivo,
+    deleteProfessor,
+    
+    createSecretario,
+    getSecretarios,
+    patchSecretario,
+    patchSecretarioArquivo,
+    deleteSecretario,
 } from "../controllers/auth";
 import professor from "../models/professor";
 import secretario from "../models/secretario";
@@ -82,6 +98,7 @@ import { runInContext } from "vm";
  *        
  * 
  */
+// Rota User:
 router.post("/register", createUser);
 
 /**
@@ -106,74 +123,36 @@ router.post("/register", createUser);
  * 
  */
 
-
-// Rotas 
-// Rotas Get
-router.get('/getProfessores', (req, res) => {
-    try{
-        professor.find({})
-        .then((data) => {
-            res.json(data)
-        })
-        .catch((error) => {
-           res.json({message: error})
-        })
-    }catch(error){
-        res.json({message: error})
-    }
-});
-
-router.get('/getSecretarios', (req, res) => {
-    try{
-        secretario.find({})
-        .then((data) => {
-            res.json(data)
-        })
-        .catch((error) => {
-           res.json({message: error})
-        })
-    }catch(error){
-        res.json({message: error})
-    }
-});
-
-// router.get('/getAlunos', (req, res) => {
-//     try{
-//         aluno.find({})
-//         .then((data) => {
-//             res.json(data)
-//         })
-//         .catch((error) => {
-//            res.json({message: error})
-//         })
-//     }catch(error){
-//         res.json({message: error})
-//     }
-// });
-
-router.get("/getAlunos", getAluno)
-
-// Rotas Post
+// Rota Login:
 router.post("/login", loginUser);
 
-router.post("/registroProfessor", createProfessor);
-
-router.post("/registroSecretario", createSecretario);
-
+// Rotas Aluno 
 router.post("/registroAluno", createAluno);
-
-router.post("/registroPaciente", createPaciente);
-
-// Rotas Patch
+router.get("/getAlunos", getAluno);
 router.patch("/attAluno/:id", patchAluno);
+router.patch("/arquivarAluno/:id", PatchAlunoArquivo);
+router.delete("/deleteAluno/:id", deleteAluno);
 
-router.patch("/arquivar/:id", PatchAlunoArquivo);
+// Rotas Paciente
+router.post("/registroPaciente", createPaciente);
+router.get("/getPacientes", getPaciente);
+router.patch("/attPaciente", patchPaciente);
+router.patch("/arquivarPacientes", patchPacienteArquivo);
+router.delete("/arquivarPacientes", deletePaciente);
 
+// Rotas Professor 
+router.post("/registroProfessor", createProfessor);
+router.get("/getProfessores", getProfessores);
+router.patch("/attProfessor", patchProfessor);
+router.patch("/arquivarProfessor", patchProfessorArquivo);
+router.delete("/arquivarProfessor", deleteProfessor);
 
-// Rotas Delete
-router.delete("/deleteAluno/:id", deleteAluno)
-
-// Rotas de Delete
+// Rotas Secretario
+router.post("/registroSecretario", createSecretario);
+router.get("/getSecretarios", getSecretarios);
+router.patch("/attSecretario", patchSecretario);
+router.patch("/arquivarSecretario", patchSecretarioArquivo);
+router.delete("/arquivarSecretario", deleteSecretario);
 
 // obs. da errqo se tentar utilizar export default
 module.exports = router

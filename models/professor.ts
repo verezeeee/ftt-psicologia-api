@@ -28,6 +28,11 @@ const professorSchema = new mongoose.Schema (
             required: true,
             trim: true,
           },
+          arquivado: {
+            type: Boolean,
+            default: false,
+            required:false,
+          },
     },
     { timestamps: true }
 );

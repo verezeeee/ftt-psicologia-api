@@ -15,6 +15,8 @@ import bcrypt from "bcrypt";
 import { decode } from "punycode";
 import aluno from "../models/aluno";
 import { request } from "http";
+import professor from "../models/professor";
+import secretario from "../models/secretario";
 
 // Funçoes User:
 // Metodo POST:
@@ -144,73 +146,74 @@ export async function createUser(request: Request, response: Response) {
   }
 }
 
-// Metodo GET:
-export async function getAluno(req: Request, res: Response) {
-  try{
-    aluno.find({})
-    .then((data) =>{
-      response.json(data)
-    })
-    .catch((error) => {
-      res.json({message: error})
-    })
-  }catch(error) {
-    res.json({message: Error})
+// Funçoes User:
+// Metodo POST:
+export async function loginUser(request: Request, response: Response) {
+  
+  const { cpf, password } = request.body;
+  if (!cpf) {
+    return response
+        .status(203)
+        .send("CPF inválido.");
   }
+
+  if (!password) {
+    return response
+        .status(203)
+        .send("Senha inválida.");
+  }
+
+  if (password.lenght < 8){
+      return response
+        .status(203)
+        .send("Senha inválida. Deve possuir mais de 8 caracteres.");
+  }
+
+  const userInDatabaseByCpf = await User.findOne({ cpf }).lean();
+
+  // Vendo se usuário existe no DB:
+  if (!userInDatabaseByCpf) {
+    return response
+        .status(203)
+        .send("Não foi possivel encontrar um usuário com esse CPF.");
+  }
+
+  // Vendo se senha existe no DB:
+  if (!userInDatabaseByCpf.senha) {
+    return response
+        .status(203)
+        .send("erro");
+  }
+  
+  const databaseSenhaCriptografada = userInDatabaseByCpf.senha;
+  const booleanReqSenhaCriptografada = await bcrypt.compare(
+    password, databaseSenhaCriptografada); // 'senha' aqui, é a que vem no request.
+
+  // Se a comparação for 'false', retorna senha incorreta.
+  if (!booleanReqSenhaCriptografada) {
+    return response
+        .status(203)
+        .send("Senha incorreta.");
+  }
+  const token = jwt.sign({ email: cpf}, JWT_SECRET, {
+    expiresIn: '1h',
+  })
+  console.log('Fez login e gerou token.')
+  if (response.status(201)){
+    return response.status(200).send(
+      {
+        auth: true,
+        token: token,
+        user: userInDatabaseByCpf
+      }
+    )
+  }
+  // Se comparação for 'true', retorna que pode acessar o sistema.
+  return response
+    .status(200)
+    .send("Login feito com sucesso. Usuário pode acessar o sistema.");
 }
 
-// Metodo PATCH:
-export async function patchAluno(request: Request, response: Response) {
-  try {
-    const id = request.params.id;
-    const { matricula, periodo, nome, cpf, telefoneContato, professor, email } = request.body;
-
-    const res = await aluno.findByIdAndUpdate(id, {
-      matricula,
-      periodo,
-      nome,
-      cpf,
-      telefoneContato,
-      professor,
-      email,
-    });
-    response.send({ status: "ok", ocorrencias: res})
-  }
-  catch (error) {
-    console.error(error);
-  }
-
-}
-
-export async function PatchAlunoArquivo(request: Request, response: Response) {
-  try {
-    const id = request.params.id;
-    const { arquivado }
-    = request.body
-
-    const res = await aluno.findByIdAndUpdate(id, {
-      arquivado,
-    });
-    response.send({ status: "ok", ocorrencias: res})
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-// Metodo DELETE?
-export async function deleteAluno(request: Request, response: Response) {
-  try {
-    const id = request.params.id;
-    
-    const res = await aluno.findByIdAndDelete(id)
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-// Login User
 
 // Funçoes Aluno:
 // Metodo POST:
@@ -310,6 +313,72 @@ export async function createAluno(request: Request, response: Response) {
         .send("Não foi possivel realizar o Cadastro do aluno.");
   }
 }
+// Metodo GET:
+export async function getAluno(req: Request, res: Response) {
+  try{
+    aluno.find({})
+    .then((data) =>{
+      response.json(data)
+    })
+    .catch((error) => {
+      res.json({message: error})
+    })
+  }catch(error) {
+    res.json({message: Error})
+  }
+}
+
+// Metodo PATCH:
+export async function patchAluno(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { matricula, periodo, nome, cpf, telefoneContato, professor, email } = request.body;
+
+    const res = await aluno.findByIdAndUpdate(id, {
+      matricula,
+      periodo,
+      nome,
+      cpf,
+      telefoneContato,
+      professor,
+      email,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+}
+
+export async function PatchAlunoArquivo(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { arquivado }
+    = request.body
+
+    const res = await aluno.findByIdAndUpdate(id, {
+      arquivado,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+// Metodo DELETE:
+export async function deleteAluno(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    
+    const res = await aluno.findByIdAndDelete(id)
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
 
 // Funçoes Paciente:
 // Metodo POST:
@@ -345,6 +414,9 @@ export async function createPaciente(request: Request, response: Response) {
     tipoDeTratamento,
     alunoUnieva,
     funcionarioUnieva,
+    // Arquivado:
+    arquivado,
+
         
   } = request.body;
   
@@ -533,6 +605,126 @@ export async function createPaciente(request: Request, response: Response) {
   }
 }
 
+// Metodo GET:
+export async function getPaciente(req: Request, res: Response) {
+  try{
+    Paciente.find({})
+    .then((data) =>{
+      response.json(data)
+    })
+    .catch((error) => {
+      res.json({message: error})
+    })
+  }catch(error) {
+    res.json({message: Error})
+  }
+}
+
+// Metodo PATCH:
+export async function patchPaciente(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const {
+    // Informações pessoais:
+    nome,
+    cpf,
+    dataDeNacimento,
+    email,
+    telefoneContato,
+    sexo,
+    estadoCivil,
+    religiao,
+    rendaFamiliar,
+    profissao,
+    outroContato,
+    nomeDoContatoResponsavel,
+    menorDeIdade,
+    naturalidade,
+    nacionalidade,
+    // Endereço:
+    enderecoCep,
+    enderecoLogradouro,
+    enderecoBairro,
+    enderecoComplemento,
+    enderecoCidade,
+    enderecoUF,
+    // Informação de tratamento:
+    dataInicioTratamento,
+    dataTerminoTratamento,
+    quemEncaminhou,
+    tipoDeTratamento,
+    alunoUnieva,
+    funcionarioUnieva,
+    } = request.body;
+
+    const res = await Paciente.findByIdAndUpdate(id, {
+    // Informações pessoais:
+    nome,
+    cpf,
+    dataDeNacimento,
+    email,
+    telefoneContato,
+    sexo,
+    estadoCivil,
+    religiao,
+    rendaFamiliar,
+    profissao,
+    outroContato,
+    nomeDoContatoResponsavel,
+    menorDeIdade,
+    naturalidade,
+    nacionalidade,
+    // Endereço:
+    enderecoCep,
+    enderecoLogradouro,
+    enderecoBairro,
+    enderecoComplemento,
+    enderecoCidade,
+    enderecoUF,
+    // Informação de tratamento:
+    dataInicioTratamento,
+    dataTerminoTratamento,
+    quemEncaminhou,
+    tipoDeTratamento,
+    alunoUnieva,
+    funcionarioUnieva,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+}
+
+export async function patchPacienteArquivo(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { arquivado }
+    = request.body
+
+    const res = await Paciente.findByIdAndUpdate(id, {
+      arquivado,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+// Metodo DELETE:
+export async function deletePaciente(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    
+    const res = await Paciente.findByIdAndDelete(id)
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
 // Funçoes Professor:
 // Metodo POST:
 export async function createProfessor(request: Request, response: Response) {
@@ -542,6 +734,8 @@ export async function createProfessor(request: Request, response: Response) {
     telefoneContato,
     email,
     disciplina,
+    arquivado,
+
   } = request.body;
 
   if (!nome) {
@@ -612,6 +806,76 @@ export async function createProfessor(request: Request, response: Response) {
   }
 }
 
+// Metodo GET:
+export async function getProfessores(req: Request, res: Response) {
+  try{
+    professor.find({})
+    .then((data) =>{
+      response.json(data)
+    })
+    .catch((error) => {
+      res.json({message: error})
+    })
+  }catch(error) {
+    res.json({message: Error})
+  }
+}
+
+// Metodo PATCH:
+export async function patchProfessor(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    disciplina,
+    } = request.body;
+
+    const res = await professor.findByIdAndUpdate(id, {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    disciplina,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+}
+
+export async function patchProfessorArquivo(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { arquivado }
+    = request.body
+
+    const res = await professor.findByIdAndUpdate(id, {
+      arquivado,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+// Metodo DELETE:
+export async function deleteProfessor(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    
+    const res = await professor.findByIdAndDelete(id)
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
 // Funçoes Secretario:
 // Metodo POST:
 export async function createSecretario(request: Request, response: Response) {
@@ -621,6 +885,8 @@ export async function createSecretario(request: Request, response: Response) {
     telefoneContato,
     email,
     turno,
+    arquivado,
+
   } = request.body;
 
   if (!nome) {
@@ -691,71 +957,72 @@ export async function createSecretario(request: Request, response: Response) {
   }
 }
 
+// Metodo GET:
+export async function getSecretarios(req: Request, res: Response) {
+  try{
+    secretario.find({})
+    .then((data) =>{
+      response.json(data)
+    })
+    .catch((error) => {
+      res.json({message: error})
+    })
+  }catch(error) {
+    res.json({message: Error})
+  }
+}
 
+// Metodo PATCH:
+export async function patchSecretario(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    turno,
+    } = request.body;
 
-
-export async function loginUser(request: Request, response: Response) {
-  
-  const { cpf, password } = request.body;
-  if (!cpf) {
-    return response
-        .status(203)
-        .send("CPF inválido.");
+    const res = await secretario.findByIdAndUpdate(id, {
+    nome,
+    cpf,
+    telefoneContato,
+    email,
+    turno,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
   }
 
-  if (!password) {
-    return response
-        .status(203)
-        .send("Senha inválida.");
-  }
+}
 
-  if (password.lenght < 8){
-      return response
-        .status(203)
-        .send("Senha inválida. Deve possuir mais de 8 caracteres.");
-  }
+export async function patchSecretarioArquivo(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    const { arquivado }
+    = request.body
 
-  const userInDatabaseByCpf = await User.findOne({ cpf }).lean();
+    const res = await secretario.findByIdAndUpdate(id, {
+      arquivado,
+    });
+    response.send({ status: "ok", ocorrencias: res})
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
 
-  // Vendo se usuário existe no DB:
-  if (!userInDatabaseByCpf) {
-    return response
-        .status(203)
-        .send("Não foi possivel encontrar um usuário com esse CPF.");
+// Metodo DELETE:
+export async function deleteSecretario(request: Request, response: Response) {
+  try {
+    const id = request.params.id;
+    
+    const res = await secretario.findByIdAndDelete(id)
   }
-
-  // Vendo se senha existe no DB:
-  if (!userInDatabaseByCpf.senha) {
-    return response
-        .status(203)
-        .send("erro");
+  catch (error) {
+    console.error(error);
   }
-  
-  const databaseSenhaCriptografada = userInDatabaseByCpf.senha;
-  const booleanReqSenhaCriptografada = await bcrypt.compare(
-    password, databaseSenhaCriptografada); // 'senha' aqui, é a que vem no request.
-
-  // Se a comparação for 'false', retorna senha incorreta.
-  if (!booleanReqSenhaCriptografada) {
-    return response
-        .status(203)
-        .send("Senha incorreta.");
-  }
-  const token = jwt.sign({ email: cpf}, JWT_SECRET, {
-    expiresIn: '1h',
-  })
-  console.log('Fez login e gerou token.')
-  if (response.status(201)){
-    return response.status(200).send(
-      {
-        auth: true,
-        token: token,
-        user: userInDatabaseByCpf
-      }
-    )
-  }
-  // Se comparação for 'true', retorna que pode acessar o sistema.
-  return response
-    .status(200)
-    .send("Login feito com sucesso. Usuário pode acessar o sistema.");
 }

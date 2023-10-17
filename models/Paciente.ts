@@ -115,12 +115,11 @@ const pacienteSchema = new mongoose.Schema(
         type: Boolean,
         required: false, 
       },
-      // config: {
-      //   introVisualized: Boolean,
-      //   default: {
-      //     introVisualized: false,
-      //   },
-      // },
+      arquivado: {
+        type: Boolean,
+        default: false,
+        required:false,
+      }
     },
     { timestamps: true }
   );
