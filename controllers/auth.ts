@@ -315,16 +315,16 @@ export async function createAluno(request: Request, response: Response) {
 }
 // Metodo GET:
 export async function getAluno(req: Request, res: Response) {
-  try{
+  try {
     aluno.find({})
-    .then((data) =>{
-      response.json(data)
-    })
-    .catch((error) => {
-      res.json({message: error})
-    })
-  }catch(error) {
-    res.json({message: Error})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((error) => {
+        res.json({ message: error });
+      });
+  } catch (error) {
+    res.json({ message: error });
   }
 }
 
@@ -607,16 +607,16 @@ export async function createPaciente(request: Request, response: Response) {
 
 // Metodo GET:
 export async function getPaciente(req: Request, res: Response) {
-  try{
+  try {
     Paciente.find({})
-    .then((data) =>{
-      response.json(data)
-    })
-    .catch((error) => {
-      res.json({message: error})
-    })
-  }catch(error) {
-    res.json({message: Error})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((error) => {
+        res.json({ message: error });
+      });
+  } catch (error) {
+    res.json({ message: error });
   }
 }
 
@@ -808,16 +808,16 @@ export async function createProfessor(request: Request, response: Response) {
 
 // Metodo GET:
 export async function getProfessores(req: Request, res: Response) {
-  try{
+  try {
     professor.find({})
-    .then((data) =>{
-      response.json(data)
-    })
-    .catch((error) => {
-      res.json({message: error})
-    })
-  }catch(error) {
-    res.json({message: Error})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((error) => {
+        res.json({ message: error });
+      });
+  } catch (error) {
+    res.json({ message: error });
   }
 }
 
@@ -959,16 +959,34 @@ export async function createSecretario(request: Request, response: Response) {
 
 // Metodo GET:
 export async function getSecretarios(req: Request, res: Response) {
-  try{
+  try {
     secretario.find({})
-    .then((data) =>{
-      response.json(data)
-    })
-    .catch((error) => {
-      res.json({message: error})
-    })
-  }catch(error) {
-    res.json({message: Error})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((error) => {
+        res.json({ message: error });
+      });
+  } catch (error) {
+    res.json({ message: error });
+  }
+}
+
+export async function getSecretarioById(req: Request, res: Response) {
+  try {
+    if (!secretario) {
+      throw new Error('secretario object is undefined');
+    }
+
+    const secretarioData = await secretario.findById(req.params.id);
+
+    if (!secretarioData) {
+      throw new Error('secretario not found');
+    }
+
+    res.json(secretarioData);
+  } catch (error: any) {
+    res.json({ message: error.message });
   }
 }
 

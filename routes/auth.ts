@@ -24,11 +24,12 @@ import {
     deleteProfessor,
     
     createSecretario,
+    getSecretarioById,
     getSecretarios,
     patchSecretario,
     patchSecretarioArquivo,
     deleteSecretario,
-} from "../controllers/auth";
+} from "../controllers/auth"    ;
 import professor from "../models/professor";
 import secretario from "../models/secretario";
 import aluno from "../models/aluno";
@@ -153,6 +154,7 @@ router.get("/getSecretarios", getSecretarios);
 router.patch("/attSecretario", patchSecretario);
 router.patch("/arquivarSecretario", patchSecretarioArquivo);
 router.delete("/arquivarSecretario", deleteSecretario);
+router.get("/getSecretarioById/:id", getSecretarioById);
 
 // obs. da errqo se tentar utilizar export default
 module.exports = router

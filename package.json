@@ -1,12 +1,12 @@
 {
-  "name": "Psicare-ftt-API",
+  "name": "PsicareApi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node-dev .\\server.ts"
+    "start": "ts-node-dev \\server.ts"
   },
   "author": "Helio",
   "license": "ISC",
