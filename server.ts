@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 
 const app = express();
-const port = 8081;
+const port = 8080;
 
 // Variáveis da documentação
 const swaggerJsDoc = require('swagger-jsdoc');
