@@ -7,18 +7,21 @@ import {
 
     createAluno,
     getAluno,
+    getAlunoById,
     patchAluno,
     PatchAlunoArquivo,
     deleteAluno,
 
     createPaciente,
     getPaciente,
+    getPacienteById,
     patchPaciente,
     patchPacienteArquivo,
     deletePaciente,
 
     createProfessor,
     getProfessores,
+    getProfessorById,
     patchProfessor,
     patchProfessorArquivo,
     deleteProfessor,
@@ -130,6 +133,7 @@ router.post("/login", loginUser);
 // Rotas Aluno 
 router.post("/registroAluno", createAluno);
 router.get("/getAlunos", getAluno);
+router.get("/getAlunoById/:id", getAlunoById)
 router.patch("/attAluno/:id", patchAluno);
 router.patch("/arquivarAluno/:id", PatchAlunoArquivo);
 router.delete("/deleteAluno/:id", deleteAluno);
@@ -137,6 +141,7 @@ router.delete("/deleteAluno/:id", deleteAluno);
 // Rotas Paciente
 router.post("/registroPaciente", createPaciente);
 router.get("/getPacientes", getPaciente);
+router.get("/getPacienteById/:id", getPacienteById)
 router.patch("/attPaciente", patchPaciente);
 router.patch("/arquivarPacientes", patchPacienteArquivo);
 router.delete("/arquivarPacientes", deletePaciente);
@@ -144,6 +149,7 @@ router.delete("/arquivarPacientes", deletePaciente);
 // Rotas Professor 
 router.post("/registroProfessor", createProfessor);
 router.get("/getProfessores", getProfessores);
+router.get("/getProfessorById/:id", getProfessorById)
 router.patch("/attProfessor", patchProfessor);
 router.patch("/arquivarProfessor", patchProfessorArquivo);
 router.delete("/arquivarProfessor", deleteProfessor);
@@ -151,10 +157,10 @@ router.delete("/arquivarProfessor", deleteProfessor);
 // Rotas Secretario
 router.post("/registroSecretario", createSecretario);
 router.get("/getSecretarios", getSecretarios);
+router.get("/getSecretarioById/:id", getSecretarioById);
 router.patch("/attSecretario", patchSecretario);
 router.patch("/arquivarSecretario", patchSecretarioArquivo);
 router.delete("/arquivarSecretario", deleteSecretario);
-router.get("/getSecretarioById/:id", getSecretarioById);
 
 // obs. da errqo se tentar utilizar export default
 module.exports = router

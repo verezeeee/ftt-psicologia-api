@@ -328,6 +328,24 @@ export async function getAluno(req: Request, res: Response) {
   }
 }
 
+export async function getAlunoById(req: Request, res: Response) {
+  try {
+    if (!secretario) {
+      throw new Error('secretario object is undefined');
+    }
+
+    const secretarioData = await secretario.findById(req.params.id);
+
+    if (!secretarioData) {
+      throw new Error('secretario not found');
+    }
+
+    res.json(secretarioData);
+  } catch (error: any) {
+    res.json({ message: error.message });
+  }
+}
+
 // Metodo PATCH:
 export async function patchAluno(request: Request, response: Response) {
   try {
@@ -620,6 +638,24 @@ export async function getPaciente(req: Request, res: Response) {
   }
 }
 
+export async function getPacienteById(req: Request, res: Response) {
+  try {
+    if (!Paciente) {
+      throw new Error('paciente object is undefined');
+    }
+
+    const pacienteData = await Paciente.findById(req.params.id);
+
+    if (!pacienteData) {
+      throw new Error('paciente not found');
+    }
+
+    res.json(pacienteData);
+  } catch (error: any) {
+    res.json({ message: error.message });
+  }
+}
+
 // Metodo PATCH:
 export async function patchPaciente(request: Request, response: Response) {
   try {
@@ -818,6 +854,24 @@ export async function getProfessores(req: Request, res: Response) {
       });
   } catch (error) {
     res.json({ message: error });
+  }
+}
+
+export async function getProfessorById(req: Request, res: Response) {
+  try {
+    if (!professor) {
+      throw new Error('professor object is undefined');
+    }
+
+    const professorData = await professor.findById(req.params.id);
+
+    if (!professorData) {
+      throw new Error('professor not found');
+    }
+
+    res.json(professorData);
+  } catch (error: any) {
+    res.json({ message: error.message });
   }
 }
 
